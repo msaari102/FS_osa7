@@ -10,12 +10,16 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import userService from './services/user'
 
+import { setNotification } from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
+  //const [notification, setNotification] = useState(null)
   const blogFormRef = useRef()
   const byLikes = (b1, b2) => (b2.likes > b1.likes ? 1 : -1)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs.sort(byLikes)))
@@ -100,16 +104,18 @@ const App = () => {
   }
 
   const notify = (message, type = 'info') => {
-    setNotification({ message, type })
+    /*setNotification({ message, type })
     setTimeout(() => {
       setNotification(null)
     }, 5000)
+    */
+    dispatch(setNotification(message, type, 5))
   }
 
   if (user === null) {
     return (
       <>
-        <Notification notification={notification} />
+        <Notification />
         <LoginForm onLogin={login} />
       </>
     )
@@ -119,7 +125,7 @@ const App = () => {
     <div>
       <h2>blogs</h2>
 
-      <Notification notification={notification} />
+      <Notification />
 
       <div>
         {user.name} logged in
