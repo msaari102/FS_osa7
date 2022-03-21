@@ -11,19 +11,25 @@ import loginService from './services/login'
 import userService from './services/user'
 
 import { setNotification } from './reducers/notificationReducer'
-import { useDispatch } from 'react-redux'
+import { initializeBlogs, setBlogs, create } from './reducers/blogReducer'
+import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  //const [blogs, setBlogs] = useState([])
+  const blogs = useSelector((state) => state.blogs)
   const [user, setUser] = useState(null)
-  //const [notification, setNotification] = useState(null)
   const blogFormRef = useRef()
   const byLikes = (b1, b2) => (b2.likes > b1.likes ? 1 : -1)
   const dispatch = useDispatch()
 
-  useEffect(() => {
+  /*useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs.sort(byLikes)))
   }, [])
+  */
+
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const userFromStorage = userService.getUser()
@@ -51,22 +57,14 @@ const App = () => {
   const logout = () => {
     setUser(null)
     userService.clearUser()
-    notify('good bye!')
+    notify('good bye!', 'alert')
   }
 
   const createBlog = async (blog) => {
-    blogService
-      .create(blog)
-      .then((createdBlog) => {
-        notify(
-          `a new blog '${createdBlog.title}' by ${createdBlog.author} added`
-        )
-        setBlogs(blogs.concat(createdBlog))
-        blogFormRef.current.toggleVisibility()
-      })
-      .catch((error) => {
-        notify('creating a blog failed: ' + error.response.data.error, 'alert')
-      })
+    dispatch(create(blog)).catch((error) => {
+      notify('creating a blog failed: ' + error.response.data.error, 'alert')
+    })
+    blogFormRef.current.toggleVisibility()
   }
 
   const removeBlog = (id) => {
@@ -104,11 +102,6 @@ const App = () => {
   }
 
   const notify = (message, type = 'info') => {
-    /*setNotification({ message, type })
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000)
-    */
     dispatch(setNotification(message, type, 5))
   }
 
@@ -137,15 +130,17 @@ const App = () => {
       </Togglable>
 
       <div id='blogs'>
-        {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            likeBlog={likeBlog}
-            removeBlog={removeBlog}
-            user={user}
-          />
-        ))}
+        {[...blogs]
+          .sort((a, b) => b.likes - a.likes)
+          .map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              likeBlog={likeBlog}
+              removeBlog={removeBlog}
+              user={user}
+            />
+          ))}
       </div>
     </div>
   )
