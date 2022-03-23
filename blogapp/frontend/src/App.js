@@ -6,16 +6,15 @@ import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
-import blogService from './services/blogs'
 import loginService from './services/login'
 import userService from './services/user'
 
 import { setNotification } from './reducers/notificationReducer'
 import {
   initializeBlogs,
-  setBlogs,
   create,
   voteBlog,
+  deleteBlog,
 } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -23,7 +22,6 @@ const App = () => {
   const blogs = useSelector((state) => state.blogs)
   const [user, setUser] = useState(null)
   const blogFormRef = useRef()
-  const byLikes = (b1, b2) => (b2.likes > b1.likes ? 1 : -1)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -77,10 +75,7 @@ const App = () => {
       return
     }
 
-    blogService.remove(id).then(() => {
-      const updatedBlogs = blogs.filter((b) => b.id !== id).sort(byLikes)
-      dispatch(setBlogs(updatedBlogs))
-    })
+    dispatch(deleteBlog(id))
     notify('blog deleted')
   }
 
