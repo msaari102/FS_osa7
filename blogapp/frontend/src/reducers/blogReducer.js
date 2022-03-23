@@ -11,13 +11,10 @@ const blogSlice = createSlice({
       state.push(newBlog)
     },
     likeBlog(state, action) {
-      const id = action.payload
-      const blogToChange = state.find((n) => n.id === id)
-      const changedBlog = {
-        ...blogToChange,
-        votes: blogToChange.likes + 1,
-      }
-      return state.map((blog) => (blog.id !== id ? blog : changedBlog))
+      const changedBlog = action.payload
+      return state.map((blog) =>
+        blog.id !== changedBlog.id ? blog : changedBlog
+      )
     },
     appendBlog(state, action) {
       state.push(action.payload)
@@ -28,7 +25,7 @@ const blogSlice = createSlice({
   },
 })
 
-export const { vote, appendBlog, setBlogs } = blogSlice.actions
+export const { vote, appendBlog, setBlogs, likeBlog } = blogSlice.actions
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
@@ -51,10 +48,18 @@ export const create = (content) => {
   }
 }
 
-export const voteBlog = (id) => {
+export const voteBlog = (blog) => {
   return async (dispatch) => {
-    const changedBlog = await blogService.update(id)
-    dispatch(vote(changedBlog))
+    console.log(blog)
+    const changedBlog = await blogService.update(blog.id, blog)
+    dispatch(likeBlog(changedBlog))
+    dispatch(
+      setNotification(
+        `you liked '${changedBlog.title}' by ${changedBlog.author}`,
+        'info',
+        5
+      )
+    )
   }
 }
 
