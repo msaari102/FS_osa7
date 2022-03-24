@@ -5,8 +5,9 @@ import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-
+import UserList from './components/UserList'
 import loginService from './services/login'
+import { initializeUsers } from './reducers/usersReducer'
 
 import { setNotification } from './reducers/notificationReducer'
 import { initUser, setUser, logoutUser } from './reducers/userReducer'
@@ -26,6 +27,10 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(initializeUsers())
   }, [dispatch])
 
   useEffect(() => {
@@ -123,6 +128,7 @@ const App = () => {
             />
           ))}
       </div>
+      <UserList />
     </div>
   )
 }
