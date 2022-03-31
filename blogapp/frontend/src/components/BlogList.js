@@ -6,7 +6,7 @@ import { setNotification } from '../reducers/notificationReducer'
 import Togglable from '../components/Togglable'
 import NewBlogForm from '../components/NewBlogForm'
 
-const UserList = () => {
+const BlogList = () => {
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
   const blogFormRef = useRef()
@@ -50,7 +50,7 @@ const UserList = () => {
 
   return (
     <div>
-      <Togglable buttonLabel='new note' ref={blogFormRef}>
+      <Togglable buttonLabel='create new' ref={blogFormRef}>
         <NewBlogForm onCreate={createBlog} />
       </Togglable>
 
@@ -71,4 +71,4 @@ const UserList = () => {
   )
 }
 
-export default UserList
+export default BlogList

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 const BlogDetails = ({ blog, visible, likeBlog, removeBlog, own }) => {
@@ -22,8 +22,6 @@ const BlogDetails = ({ blog, visible, likeBlog, removeBlog, own }) => {
 }
 
 const Blog = ({ blog, likeBlog, removeBlog, user }) => {
-  const [visible, setVisible] = useState(false)
-
   const style = {
     padding: 3,
     margin: 5,
@@ -33,13 +31,12 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
 
   return (
     <div style={style} className='blog'>
-      {blog.title} {blog.author}
-      <button onClick={() => setVisible(!visible)}>
-        {visible ? 'hide' : 'view'}
-      </button>
+      <Link to={`/blogs/${blog.id}`}>
+        {blog.title} {blog.author}
+      </Link>
       <BlogDetails
         blog={blog}
-        visible={visible}
+        visible={false}
         likeBlog={likeBlog}
         removeBlog={removeBlog}
         own={blog.user && user.username === blog.user.username}

@@ -13,6 +13,7 @@ import Notification from './components/Notification'
 
 import UserList from './components/UserList'
 import BlogList from './components/BlogList'
+import SingleBlog from './components/SingleBlog'
 import loginService from './services/login'
 import { initializeUsers } from './reducers/usersReducer'
 
@@ -96,28 +97,33 @@ const App = () => {
     )
   }
 
+  const style = {
+    padding: 3,
+    margin: 5,
+    backgroundColor: 'lightgrey',
+    borderWidth: 1,
+  }
+
   return (
     <Router>
-      <div>
+      <div style={style}>
         <Link style={padding} to='/blogs'>
           blogs
         </Link>
         <Link style={padding} to='/users'>
           users
         </Link>
+        {user.name} logged in
+        <button onClick={logout}>logout</button>
       </div>
 
       <h2>blogs</h2>
 
       <Notification />
 
-      <div>
-        {user.name} logged in
-        <button onClick={logout}>logout</button>
-      </div>
-
       <Routes>
         <Route path='/blogs' element={<BlogList />} />
+        <Route path='/blogs/:id' element={<SingleBlog />} />
         <Route path='/' element={<BlogList />} />
         <Route path='/users' element={<UserList />} />
         <Route path='/users/:id' element={<User />} />
