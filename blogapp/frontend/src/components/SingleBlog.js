@@ -9,13 +9,15 @@ const SingleBlog = () => {
   const id = useParams().id
   const blog = blogs.find((n) => n.id === String(id))
 
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   if (!blog || !user) {
     return null
   }
+
   const addedBy = blog.user && blog.user.name ? blog.user.name : 'anonymous'
   const own = blog.user && user.username === blog.user.username
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   const likeBlog = async (id) => {
     const toLike = blogs.find((b) => b.id === id)
@@ -57,6 +59,13 @@ const SingleBlog = () => {
       <button onClick={() => likeBlog(blog.id)}>like</button>
       <div>added by {addedBy} </div>
       {own && <button onClick={() => removeBlog(blog.id)}>remove</button>}
+      <h2>comments</h2>
+      <ul id='comments'>
+        {blog.comments.map((value, key) => (
+          // eslint-disable-next-line react/jsx-key
+          <li key={key}>{value}</li>
+        ))}
+      </ul>
     </div>
   )
 }
