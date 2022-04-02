@@ -21,6 +21,7 @@ import { setNotification } from './reducers/notificationReducer'
 import { initUser, setUser, logoutUser } from './reducers/userReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
+import { Navbar, Nav, Button } from 'react-bootstrap'
 
 const App = () => {
   const user = useSelector((state) => state.user)
@@ -97,45 +98,46 @@ const App = () => {
     )
   }
 
-  const style = {
-    padding: 3,
-    margin: 5,
-    backgroundColor: 'lightgrey',
-    borderWidth: 1,
-  }
-
   return (
-    <Router>
-      <div style={style}>
-        <Link style={padding} to='/blogs'>
-          blogs
-        </Link>
-        <Link style={padding} to='/users'>
-          users
-        </Link>
-        {user.name} logged in
-        <button onClick={logout}>logout</button>
-      </div>
+    <div className='container'>
+      <Router>
+        <Navbar collapseOnSelect expand='lg' bg='light' variant='light'>
+          <Navbar.Toggle aria-controls='responsive-navbar-nav' />
+          <Navbar.Collapse id='responsive-navbar-nav'>
+            <Nav className='mr-auto'>
+              <Nav.Link href='#' as='span'>
+                <Link style={padding} to='/blogs'>
+                  blogs
+                </Link>
+              </Nav.Link>
+              <Nav.Link href='#' as='span'>
+                <Link style={padding} to='/users'>
+                  users
+                </Link>
+              </Nav.Link>
+              <Nav.Link href='#' as='span'>
+                {user.name} logged in
+              </Nav.Link>
+              <Button onClick={logout}>logout</Button>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
 
-      <h2>blogs</h2>
+        <div className='container'>
+          <h2>blogs</h2>
+        </div>
 
-      <Notification />
+        <Notification />
 
-      <Routes>
-        <Route path='/blogs' element={<BlogList />} />
-        <Route path='/blogs/:id' element={<SingleBlog />} />
-        <Route path='/' element={<BlogList />} />
-        <Route path='/users' element={<UserList />} />
-        <Route path='/users/:id' element={<User />} />
-      </Routes>
-    </Router>
-    /*
-    <div>
-
-      <BlogList />
-      <UserList />
+        <Routes>
+          <Route path='/blogs' element={<BlogList />} />
+          <Route path='/blogs/:id' element={<SingleBlog />} />
+          <Route path='/' element={<BlogList />} />
+          <Route path='/users' element={<UserList />} />
+          <Route path='/users/:id' element={<User />} />
+        </Routes>
+      </Router>
     </div>
-  */
   )
 }
 

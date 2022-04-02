@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { voteBlog, deleteBlog, commentBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useState } from 'react'
+import { Button, Form, Table } from 'react-bootstrap'
 
 const SingleBlog = () => {
   const blogs = useSelector((state) => state.blogs)
@@ -61,36 +62,45 @@ const SingleBlog = () => {
   }
 
   return (
-    <div>
+    <div className='container'>
       <h2>
         {blog.title} {blog.author}
       </h2>
       <a href={blog.url}>{blog.url}</a>
       <div>{blog.likes} likes</div>
-      <button onClick={() => likeBlog(blog.id)}>like</button>
+      <Button variant='success' onClick={() => likeBlog(blog.id)}>
+        like
+      </Button>
       <div>added by {addedBy} </div>
-      {own && <button onClick={() => removeBlog(blog.id)}>remove</button>}
+      {own && (
+        <Button variant='secondary' onClick={() => removeBlog(blog.id)}>
+          remove
+        </Button>
+      )}
       <h2>comments</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <input
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Control
             value={comment}
             onChange={({ target }) => setComment(target.value)}
             id='commentInput'
           />
-        </div>
-        <button id='comment-button' type='submit'>
-          add comment
-        </button>
-      </form>
+          <Button id='comment-button' type='submit'>
+            add comment
+          </Button>
+        </Form.Group>
+      </Form>
 
-      <ul id='comments'>
-        {blog.comments.map((value, key) => (
-          // eslint-disable-next-line react/jsx-key
-          <li key={key}>{value}</li>
-        ))}
-      </ul>
+      <Table striped>
+        <tbody>
+          {blog.comments.map((value, key) => (
+            <tr key={key}>
+              <td>{value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
     </div>
   )
 }
