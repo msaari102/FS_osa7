@@ -52,6 +52,14 @@ export const create = (content) => {
   }
 }
 
+export const commentBlog = (id, content) => {
+  return async (dispatch) => {
+    await blogService.createComment(id, content)
+    const blogs = await blogService.getAll()
+    dispatch(setBlogs(blogs))
+  }
+}
+
 export const deleteBlog = (id) => {
   return async (dispatch) => {
     await blogService.remove(id)

@@ -1,13 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
-import { voteBlog, deleteBlog } from '../reducers/blogReducer'
+import { voteBlog, deleteBlog, commentBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { useState } from 'react'
 
 const SingleBlog = () => {
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
   const id = useParams().id
   const blog = blogs.find((n) => n.id === String(id))
+  const [comment, setComment] = useState('')
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -49,6 +51,15 @@ const SingleBlog = () => {
     navigate('/')
   }
 
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    const response = { content: comment }
+    dispatch(commentBlog(blog.id, response)).catch((error) => {
+      notify('creating a blog failed: ' + error.response.data.error, 'alert')
+    })
+    setComment('')
+  }
+
   return (
     <div>
       <h2>
@@ -60,6 +71,20 @@ const SingleBlog = () => {
       <div>added by {addedBy} </div>
       {own && <button onClick={() => removeBlog(blog.id)}>remove</button>}
       <h2>comments</h2>
+
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input
+            value={comment}
+            onChange={({ target }) => setComment(target.value)}
+            id='commentInput'
+          />
+        </div>
+        <button id='comment-button' type='submit'>
+          add comment
+        </button>
+      </form>
+
       <ul id='comments'>
         {blog.comments.map((value, key) => (
           // eslint-disable-next-line react/jsx-key
